@@ -13,26 +13,42 @@ public class Song {
 	private ArrayList<String> segments;
 	private int activeSegment;
 	
+	/**
+	 * Constructor for a Song<br/>
+	 * Songs hold information about an mp3 file and all of its frames
+	 * @param locationOnDisk location for the file or directory of the frames
+	 * @param split whether or not the song is meant to be streamed
+	 */
 	public Song(File locationOnDisk){
 		
 		//Start playing from frame 0
 		activeSegment = 0;
 		
-		//List all files in the directory <locationOnDisk>
-		String[] listOfFiles = locationOnDisk.list(new FilenameFilter(){
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".mp3");
-			}
-		});
+		//If the song is a set of frames
+		if(locationOnDisk.isDirectory()){
+			//List all files in the directory <locationOnDisk>
+			String[] listOfFiles = locationOnDisk.list(new FilenameFilter(){
+				@Override
+				public boolean accept(File dir, String name) {
+					return name.endsWith(".mp3");
+				}
+			});
 		
-		//Add all frames to the array list
-		segments = new ArrayList<>();
-		for(String fileName: listOfFiles){
-			segments.add(fileName);
+			//Add all frames to the array list
+			segments = new ArrayList<>();
+			for(String fileName : listOfFiles){
+				segments.add(fileName);
+			}
+			
+			//Set the current audioclip from the segments
+			currentAudio = new AudioClip(segments.get(0));
+
+			//If the song is an mp3 file, then set a flag
+		}else{
+			activeSegment = -1;
+			currentAudio = new AudioClip(locationOnDisk.getAbsolutePath());
 		}
 		
-		currentAudio = new AudioClip(segments.get(0));
 	}
 
 	/**
@@ -40,7 +56,9 @@ public class Song {
 	 */
 	public void play(){
 		currentAudio.play();
-		nextAudio = new AudioClip(segments.get(activeSegment)+1);
+		//If the song has multiple segments
+		if(activeSegment > -1)
+			nextAudio = new AudioClip(segments.get(activeSegment)+1);
 	}
 	
 	/**
@@ -54,6 +72,8 @@ public class Song {
 	 * Advance to the next frame of the song
 	 */
 	public void advance(){
+		if(activeSegment < 0)
+			return;
 		currentAudio = nextAudio;
 		currentAudio.play();
 		nextAudio = new AudioClip(segments.get(++activeSegment));
