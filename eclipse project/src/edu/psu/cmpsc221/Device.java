@@ -95,6 +95,12 @@ public class Device {
 				songs.add(new Song(new File(dir.getAbsolutePath()+file)));
 			}
 			
+			//get all songs from all subdevices
+			for(Device device : locations){
+				//traverse the subdevice tree
+				songs.addAll(device.getSongs());
+			}
+			
 			return songs;
 		}else{
 			//TODO Get a list of songs from the network
