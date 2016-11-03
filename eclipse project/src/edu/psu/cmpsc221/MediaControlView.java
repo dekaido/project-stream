@@ -4,7 +4,9 @@ import javafx.scene.layout.Pane;
 
 public class MediaControlView extends Pane{
 
-	public MediaControlView(){
+	Song activeSong;
+	
+	public MediaControlView(Main main){
 		setStyle("-fx-background-color: #f44256");
 		setPrefHeight(50);
 	}

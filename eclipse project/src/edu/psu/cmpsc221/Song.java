@@ -12,6 +12,7 @@ public class Song {
 	private AudioClip nextAudio;
 	private ArrayList<String> segments;
 	private int activeSegment;
+	private String name;
 	
 	/**
 	 * Constructor for a Song<br/>
@@ -27,6 +28,7 @@ public class Song {
 		//If the song is a set of frames
 		if(locationOnDisk.isDirectory()){
 			//List all files in the directory <locationOnDisk>
+			name = locationOnDisk.getName();
 			String[] listOfFiles = locationOnDisk.list(new FilenameFilter(){
 				@Override
 				public boolean accept(File dir, String name) {
@@ -45,6 +47,7 @@ public class Song {
 
 			//If the song is an mp3 file, then set a flag
 		}else{
+			name = locationOnDisk.getName().substring(0, (int)locationOnDisk.length()-6);
 			activeSegment = -1;
 			currentAudio = new AudioClip(locationOnDisk.getAbsolutePath());
 		}
@@ -95,4 +98,7 @@ public class Song {
 		return currentAudio.isPlaying();
 	}
 	
+	public String getName(){
+		return name;
+	}
 }

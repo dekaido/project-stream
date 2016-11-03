@@ -6,23 +6,28 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class Device {
+public class Device{
 
 	private URL location;
 	private ArrayList<Device> locations;
 	private boolean local;
+	private boolean useSubDirs;
+	private String name;
 	
 	/**
 	 * Constructor for Device
 	 * Devices are meant to be either local folders, local drives, or remote servers that hold media
+	 * @param name
 	 * @param location The
 	 * @param local
 	 * @param useSubDirectories
 	 */
-	public Device(URL location, boolean local, boolean useSubDirectories){
+	public Device(String name, URL location, boolean local, boolean useSubDirectories){
 		this.local = local;
 		locations = new ArrayList<>();
 		this.location = location;
+		this.useSubDirs = useSubDirectories;
+		this.name = name;
 		
 		//for local devices, the URL can be treated as a file
 		if(local){
@@ -43,7 +48,7 @@ public class Device {
 				//Add those subdirectories to the list of subdevices
 				for(String dir : dirs){
 					try {
-						locations.add(new Device(new File(dir).toURI().toURL(),local,useSubDirectories));
+						locations.add(new Device(dir, new File(dir).toURI().toURL(),local,useSubDirectories));
 					} catch (MalformedURLException e) {
 						e.printStackTrace();
 					}
@@ -106,6 +111,19 @@ public class Device {
 			//TODO Get a list of songs from the network
 			return null;
 		}
+	}
+	
+	public boolean usesSubDirectories(){
+		return useSubDirs;
+	}
+	
+	public String getName(){
+		return name;
+	}
+	
+	@Override
+	public String toString(){
+		return name + location.toString() + '\n'+ local + useSubDirs;
 	}
 	
 }
