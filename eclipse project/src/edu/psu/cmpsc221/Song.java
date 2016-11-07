@@ -47,7 +47,8 @@ public class Song {
 
 			//If the song is an mp3 file, then set a flag
 		}else{
-			name = locationOnDisk.getName().substring(0, (int)locationOnDisk.length()-6);
+			//TODO parse name
+			name = locationOnDisk.getName();
 			activeSegment = -1;
 			currentAudio = new AudioClip(locationOnDisk.getAbsolutePath());
 		}

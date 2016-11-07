@@ -47,6 +47,8 @@ public class SongView extends ListView<Song>{
 	public void setDevice(Device device){
 		songs = device.getSongs();
 		setItems((FXCollections.observableArrayList(songs)));
+		System.out.println(device.getName());
+		System.out.println(songs.get(0).getName());
 	}
 	
 }

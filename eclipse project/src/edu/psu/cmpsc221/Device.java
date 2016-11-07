@@ -3,8 +3,10 @@ package edu.psu.cmpsc221;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class Device implements Serializable{
@@ -103,7 +105,13 @@ public class Device implements Serializable{
 			});
 			//convert to songs and put in the arraylist
 			for(String file : files){
-				songs.add(new Song(new File(dir.getAbsolutePath()+file)));
+				try {
+					//TODO fix the URLEncoder to make it not append the classpath to the front of the File
+					songs.add(new Song(new File(URLEncoder.encode(dir.getAbsolutePath()+"/"+file, "UTF-8"))));
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
 			//get all songs from all subdevices

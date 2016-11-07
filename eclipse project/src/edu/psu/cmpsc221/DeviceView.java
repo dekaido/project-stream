@@ -8,6 +8,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
@@ -44,7 +46,12 @@ public class DeviceView extends ListView<String>{
 		
 		//We must carry the objectoutputstream between writes to prevent writing the header multiple times
 		try {
-			outFile = new ObjectOutputStream(new FileOutputStream("./Devices.dat",true));
+			outFile = new ObjectOutputStream(new FileOutputStream("./Devices.dat"));
+			
+			for(Device d : devices)
+				outFile.writeObject(d);
+			
+			outFile.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -57,7 +64,17 @@ public class DeviceView extends ListView<String>{
 			list.add(device.getName());
 		}
 		setItems(FXCollections.observableArrayList(list));
-		//TODO add click actions
+
+		//Handle clicks
+		getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> selection, String oldVal, String newVal) {
+				for(Device d : devices){
+					if(d.getName().equals(newVal))
+						main.getSongView().setDevice(d);
+				}
+			}
+		});
 	}
 	
 	public void addDevice(Device device){
