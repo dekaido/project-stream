@@ -3,10 +3,8 @@ package edu.psu.cmpsc221;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class Device implements Serializable{
@@ -50,16 +48,22 @@ public class Device implements Serializable{
 				});
 		
 				//Add those subdirectories to the list of subdevices
+				//TODO make the subdirs work
 				try{
-					for(String dir : dirs){
-						try {
-							locations.add(new Device(dir, new File(dir).toURI().toURL(),local,useSubDirectories));
-						} catch (MalformedURLException e) {
-							e.printStackTrace();
+					if(dirs != null){
+						for(String dir : dirs){
+							if(dir != null){
+								try {
+									locations.add(new Device(dir, new File(dir).toURI().toURL(),local,useSubDirectories));
+								} catch (MalformedURLException e) {
+									e.printStackTrace();
+								}
+							}
 						}
 					}
 				}catch(NullPointerException e){
-					locations = new ArrayList<>();
+					e.printStackTrace();
+					//locations = new ArrayList<>();
 				}
 				//For network devices, there will be no subdevices
 			}else{
@@ -103,21 +107,19 @@ public class Device implements Serializable{
 				}
 				
 			});
-			//convert to songs and put in the arraylist
-			for(String file : files){
-				try {
-					//TODO fix the URLEncoder to make it not append the classpath to the front of the File
-					songs.add(new Song(new File(URLEncoder.encode(dir.getAbsolutePath()+"/"+file, "UTF-8"))));
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			if(files != null){
+				//convert to songs and put in the arraylist
+				for(String file : files){
+					songs.add(new Song(new File((dir.getPath()+"/"+file))));
 				}
 			}
 			
 			//get all songs from all subdevices
-			for(Device device : locations){
-				//traverse the subdevice tree
-				songs.addAll(device.getSongs());
+			if(locations != null){
+				for(Device device : locations){
+					//traverse the subdevice tree
+					songs.addAll(device.getSongs());
+				}
 			}
 			
 			return songs;
@@ -141,6 +143,9 @@ public class Device implements Serializable{
 	}
 	
 	public void rebuildDirs(){
+		
+		locations = new ArrayList<>();
+		
 		if(useSubDirs){
 			//Convert the URL to a File
 			File directory = new File(location.getFile());
@@ -155,16 +160,18 @@ public class Device implements Serializable{
 			});
 	
 			//Add those subdirectories to the list of subdevices
-			for(String dir : dirs){
-				try {
-					locations.add(new Device(dir, new File(dir).toURI().toURL(),local,useSubDirs));
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
+			if(dirs != null){
+				for(String dir : dirs){
+					try {
+						locations.add(new Device(dir, new File(dir).toURI().toURL(),local,useSubDirs));
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			//For network devices, there will be no subdevices
 		}else{
-			locations = null;
+			locations = new ArrayList<>();
 		}
 	}
 	

@@ -43,14 +43,14 @@ public class Song {
 			}
 			
 			//Set the current audioclip from the segments
-			currentAudio = new AudioClip(segments.get(0));
+			currentAudio = new AudioClip(segments.get(0).replace('\\', '/'));
 
 			//If the song is an mp3 file, then set a flag
 		}else{
 			//TODO parse name
 			name = locationOnDisk.getName();
 			activeSegment = -1;
-			currentAudio = new AudioClip(locationOnDisk.getAbsolutePath());
+			currentAudio = new AudioClip(locationOnDisk.toURI().toString());
 		}
 		
 	}

@@ -32,7 +32,9 @@ public class DeviceView extends ListView<String>{
 		try(ObjectInputStream inFile = new ObjectInputStream(new FileInputStream("Devices.dat"))) {
 			while(true){
 				try{
-					devices.add((Device)inFile.readObject());
+					Device d = (Device)inFile.readObject();
+					d.rebuildDirs();
+					devices.add(d);
 				}catch(EOFException e){
 					break;
 				} catch (ClassNotFoundException e) {

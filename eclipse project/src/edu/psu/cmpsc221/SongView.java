@@ -4,51 +4,32 @@ import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.Orientation;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.util.Callback;
 
-public class SongView extends ListView<Song>{
+public class SongView extends ListView<String>{
 
-	private ArrayList<Song> songs;
+	private ArrayList<String> songs;
 	private Main main;
 	
 	public SongView(Main main){
 		
-		songs = null;
+		songs = new ArrayList<>();
 		this.main = main;
 		setOrientation(Orientation.VERTICAL);
-		setCellFactory(new Callback<ListView<Song>, ListCell<Song>>(){
-
-			@Override
-            public ListCell<Song> call(ListView<Song> p) {
-                 
-                ListCell<Song> cell = new ListCell<Song>(){
- 
-                    @Override
-                    protected void updateItem(Song song, boolean bln) {
-                        super.updateItem(song, bln);
-                        if (song != null) {
-                        	//TODO Display full information on Song
-                            setText(song.getName());
-                        }
-                    }
- 
-                };
-                 
-                return cell;
-            }
-			
-		});
+		//TODO convert songs to a Song arraylist
 
 		//TODO add click actions
+		songs.add("Crap");
+		setItems((FXCollections.observableArrayList(songs)));
 	}
 	
 	public void setDevice(Device device){
-		songs = device.getSongs();
+		songs = new ArrayList<>();
+		ArrayList<Song> sings = device.getSongs();
+		for(Song song : sings){
+			songs.add(song.getName());
+		}
 		setItems((FXCollections.observableArrayList(songs)));
-		System.out.println(device.getName());
-		System.out.println(songs.get(0).getName());
 	}
 	
 }
