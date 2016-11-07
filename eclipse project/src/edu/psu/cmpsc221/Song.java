@@ -3,7 +3,7 @@ package edu.psu.cmpsc221;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-
+//TODO Convert to using Media/MediaPlayer to allow for metadata readings
 import javafx.scene.media.AudioClip;
 
 public class Song {
