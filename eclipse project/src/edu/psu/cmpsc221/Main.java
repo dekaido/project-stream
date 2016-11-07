@@ -8,6 +8,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class Main extends Application{
@@ -69,10 +70,16 @@ public class Main extends Application{
 		//TODO add functionality to the menu
 		MenuBar menu = new MenuBar();
 		Menu menuFile = new Menu("File");
-		MenuItem addDevice = new MenuItem("Add Device");
-		menuFile.getItems().add(addDevice);
-		Menu menuEdit = new Menu("Edit");
-		menu.getMenus().addAll(menuFile, menuEdit);
+		MenuItem addLocalDevice = new MenuItem("Add Local Device");
+		menuFile.getItems().add(addLocalDevice);
+		menu.getMenus().add(menuFile);
+		
+		addLocalDevice.setOnAction(e -> {
+			AddLocalDeviceWindow wind = new AddLocalDeviceWindow(deviceView);
+			wind.initOwner(primaryStage);
+			wind.initModality(Modality.WINDOW_MODAL);
+			wind.show();
+		});
 		
 		//Enable the menu
 		container.setTop(menu);

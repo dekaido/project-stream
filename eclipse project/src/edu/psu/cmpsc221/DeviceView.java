@@ -1,13 +1,15 @@
 package edu.psu.cmpsc221;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.EOFException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
 import javafx.scene.control.ListView;
 
@@ -15,6 +17,7 @@ public class DeviceView extends ListView<String>{
 
 	ArrayList<Device> devices;
 	Main main;
+	ObjectOutputStream outFile;
 	
 	public DeviceView(Main main){
 		//Set a default width
@@ -23,27 +26,27 @@ public class DeviceView extends ListView<String>{
 		devices = new ArrayList<>();
 		this.main = main;
 		
-		//Read devices from Devices.txt into the arraylist
-		try {
-			//TODO get the path for Devices.txt
-			Scanner inFile = new Scanner(new File("./Devices.txt"));
-			while(inFile.hasNextLine()){
-				String line = inFile.nextLine();
-				URL location;
-				String name = line;
-				line = inFile.nextLine();
-				try {
-					location = new URL(line);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-					location = null;
+		//Read devices from Devices.dat into the arraylist
+		try(ObjectInputStream inFile = new ObjectInputStream(new FileInputStream("Devices.dat"))) {
+			while(true){
+				try{
+					devices.add((Device)inFile.readObject());
+				}catch(EOFException e){
+					break;
+				} catch (ClassNotFoundException e) {
+					break;
 				}
-				boolean local = inFile.nextBoolean();
-				boolean subDirs = inFile.nextBoolean();
-				devices.add(new Device(name, location, local, subDirs));
-				inFile.close();
 			}
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+			// TODO Handle Many Exceptions
+			e.printStackTrace();
+		}
+		
+		//We must carry the objectoutputstream between writes to prevent writing the header multiple times
+		try {
+			outFile = new ObjectOutputStream(new FileOutputStream("./Devices.dat",true));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -55,6 +58,21 @@ public class DeviceView extends ListView<String>{
 		}
 		setItems(FXCollections.observableArrayList(list));
 		//TODO add click actions
+	}
+	
+	public void addDevice(Device device){
+		devices.add(device);
+		ObservableList<String> list = getItems();
+		list.add(device.getName());
+		setItems(list);
+		
+		try{
+			outFile.writeObject(device);
+			outFile.flush();
+		} catch (IOException e) {
+			// TODO Handle Exceptions
+			e.printStackTrace();
+		}
 	}
 	
 }

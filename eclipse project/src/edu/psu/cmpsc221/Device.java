@@ -2,14 +2,16 @@ package edu.psu.cmpsc221;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class Device{
+public class Device implements Serializable{
 
+	private static final long serialVersionUID = -7161358199893324302L;
 	private URL location;
-	private ArrayList<Device> locations;
+	transient private ArrayList<Device> locations;
 	private boolean local;
 	private boolean useSubDirs;
 	private String name;
@@ -46,16 +48,20 @@ public class Device{
 				});
 		
 				//Add those subdirectories to the list of subdevices
-				for(String dir : dirs){
-					try {
-						locations.add(new Device(dir, new File(dir).toURI().toURL(),local,useSubDirectories));
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
+				try{
+					for(String dir : dirs){
+						try {
+							locations.add(new Device(dir, new File(dir).toURI().toURL(),local,useSubDirectories));
+						} catch (MalformedURLException e) {
+							e.printStackTrace();
+						}
 					}
+				}catch(NullPointerException e){
+					locations = new ArrayList<>();
 				}
 				//For network devices, there will be no subdevices
 			}else{
-				locations = null;
+				locations = new ArrayList<>();
 			}
 		}
 	}
@@ -123,7 +129,35 @@ public class Device{
 	
 	@Override
 	public String toString(){
-		return name + location.toString() + '\n'+ local + useSubDirs;
+		return name + "\n" + location.toString() + "\n" + local + useSubDirs;
+	}
+	
+	public void rebuildDirs(){
+		if(useSubDirs){
+			//Convert the URL to a File
+			File directory = new File(location.getFile());
+			//Get a list of all subdirectories
+			String[] dirs = directory.list(new FilenameFilter(){
+
+			@Override
+			public boolean accept(File current, String name) {
+				return new File(current, name).isDirectory();
+			}
+		
+			});
+	
+			//Add those subdirectories to the list of subdevices
+			for(String dir : dirs){
+				try {
+					locations.add(new Device(dir, new File(dir).toURI().toURL(),local,useSubDirs));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+			}
+			//For network devices, there will be no subdevices
+		}else{
+			locations = null;
+		}
 	}
 	
 }
