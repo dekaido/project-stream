@@ -25,7 +25,7 @@ public class SongView extends ListView<String>{
 					@Override
 					public void changed(ObservableValue<? extends String> selection, String oldVal, String newVal) {
 						int i;
-						for(i = 0; i < songs.size() && !songs.get(i).getName().equals(newVal); i++)
+						for(i = 0; i < songs.size() && !songs.get(i).getName().equals(newVal); i++);
 						main.getMediaControlView().setActiveSong(songs.get(i));
 					}
 				});
