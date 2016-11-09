@@ -1,6 +1,10 @@
 package edu.psu.cmpsc221;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 
 public class MediaControlView extends GridPane{
@@ -8,9 +12,10 @@ public class MediaControlView extends GridPane{
 	Song activeSong;
 	
 	//UI Components
-	Button pause;
-	Button resume;
-	Button stop;
+	private Button pause;
+	private Button resume;
+	private Button stop;
+	private Slider volume;
 	
 	public MediaControlView(Main main){
 		
@@ -36,19 +41,34 @@ public class MediaControlView extends GridPane{
 					activeSong.getMediaPlayer().play();
 		});
 		
-		//TODO add volume controls and time controls
+		volume = new Slider();
+		volume.setMin(0);
+		volume.setMax(1);
+		volume.valueProperty().addListener(new ChangeListener<Number>(){
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number old, Number current) {
+				if(activeSong != null)
+					activeSong.getMediaPlayer().setVolume(current.doubleValue());
+			}
+			
+		});
+		
+		//TODO add time controls
 		
 		add(pause, 0, 0);
 		add(resume, 0, 1);
 		add(stop, 0, 2);
+		add(new Label("Volume:"),0,3);
+		add(volume, 1, 3);
 	}
 	
 	public void setActiveSong(Song song){
 		if(activeSong != null)
 			activeSong.getMediaPlayer().stop();
 		activeSong = song;
-		//TODO see if this works
 		activeSong.getMediaPlayer().play();
+		activeSong.getMediaPlayer().setVolume(volume.getValue());
 	}
 	
 }
