@@ -3,13 +3,14 @@ package edu.psu.cmpsc221;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-//TODO Convert to using Media/MediaPlayer to allow for metadata readings
-import javafx.scene.media.AudioClip;
+
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 public class Song {
 
-	private AudioClip currentAudio;
-	private AudioClip nextAudio;
+	private MediaPlayer currentAudio;
+	private MediaPlayer nextAudio;
 	private ArrayList<String> segments;
 	private int activeSegment;
 	private String name;
@@ -43,60 +44,25 @@ public class Song {
 			}
 			
 			//Set the current audioclip from the segments
-			currentAudio = new AudioClip(segments.get(0).replace('\\', '/'));
+			currentAudio = new MediaPlayer(new Media(segments.get(0).replace('\\', '/')));
 
 			//If the song is an mp3 file, then set a flag
 		}else{
 			//TODO parse name
 			name = locationOnDisk.getName();
 			activeSegment = -1;
-			currentAudio = new AudioClip(locationOnDisk.toURI().toString());
+			currentAudio = new MediaPlayer(new Media(locationOnDisk.toURI().toString()));
 		}
 		
 	}
 
-	/**
-	 * Begin playback of the audioclip
-	 */
-	public void play(){
-		currentAudio.play();
-		//If the song has multiple segments
-		if(activeSegment > -1)
-			nextAudio = new AudioClip(segments.get(activeSegment)+1);
+	public MediaPlayer getMediaPlayer(){
+		return currentAudio;
 	}
 	
-	/**
-	 * Immediately halt the audioclip
-	 */
-	public void stop(){
-		currentAudio.stop();
-	}
-
-	/**
-	 * Advance to the next frame of the song
-	 */
-	public void advance(){
-		if(activeSegment < 0)
-			return;
+	public void advanceMedia(){
 		currentAudio = nextAudio;
-		currentAudio.play();
-		nextAudio = new AudioClip(segments.get(++activeSegment));
-	}
-	
-	/**
-	 * Get the current volume
-	 * @return volume : double
-	 */
-	public double getVolume(){
-		return currentAudio.getVolume();
-	}
-	
-	/**
-	 * Returns whether or not the song is playing
-	 * @return is playing : boolean
-	 */
-	public boolean isPlaying(){
-		return currentAudio.isPlaying();
+		nextAudio = new MediaPlayer(new Media(segments.get(++activeSegment)));
 	}
 	
 	public String getName(){
