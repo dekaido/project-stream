@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
+/**
+ * The Song class provides a wrapper for a MediaPlayer with a list of mp3 files for a network stream.
+ * @author David McDermott
+ * @author Grace Lin
+ */
 public class Song {
 
 	private MediaPlayer currentAudio;
@@ -19,7 +24,6 @@ public class Song {
 	 * Constructor for a Song<br/>
 	 * Songs hold information about an mp3 file and all of its frames
 	 * @param locationOnDisk location for the file or directory of the frames
-	 * @param split whether or not the song is meant to be streamed
 	 */
 	public Song(File locationOnDisk){
 		
@@ -56,16 +60,28 @@ public class Song {
 		
 	}
 
+	/**
+	 * Allows for access to the MediaPlayer for control over playback
+	 * @return currentAudio
+	 */
 	public MediaPlayer getMediaPlayer(){
 		return currentAudio;
 	}
 	
+	/**
+	 * Advance to the next stage of the track for split songs
+	 */
 	public void advanceMedia(){
 		currentAudio = nextAudio;
 		nextAudio = new MediaPlayer(new Media(segments.get(++activeSegment)));
 	}
 	
+	/**
+	 * Get the name of the song based on the file name
+	 * @return name
+	 */
 	public String getName(){
+		//TODO use mp3 tags to get a more accurate name
 		return name;
 	}
 }

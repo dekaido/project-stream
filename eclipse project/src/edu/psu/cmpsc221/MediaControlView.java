@@ -7,8 +7,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 
+/**
+ * The MediaControlView provides control over the current song playing incluiding volume, pausing, playing, and stopping the audio.<br/>
+ * This class is intended to provide total playback control over the Song
+ * @author David McDermott
+ * @author Grace Lin
+ */
 public class MediaControlView extends GridPane{
 
+	//TODO make this a prettier grid or non grid view
+	
 	Song activeSong;
 	
 	//UI Components
@@ -41,9 +49,12 @@ public class MediaControlView extends GridPane{
 					activeSong.getMediaPlayer().play();
 		});
 		
+		//Volume is a range from 0-1 so it should be a slider
 		volume = new Slider();
 		volume.setMin(0);
 		volume.setMax(1);
+		volume.setValue(1);
+		//Volume needs a change listener to update in realish time
 		volume.valueProperty().addListener(new ChangeListener<Number>(){
 
 			@Override
@@ -56,6 +67,7 @@ public class MediaControlView extends GridPane{
 		
 		//TODO add time controls
 		
+		//Add all UI Components
 		add(pause, 0, 0);
 		add(resume, 0, 1);
 		add(stop, 0, 2);
@@ -63,12 +75,19 @@ public class MediaControlView extends GridPane{
 		add(volume, 1, 3);
 	}
 	
+	/**
+	 * Set the Song controlled by the View
+	 * @param song The Song to be controled
+	 */
 	public void setActiveSong(Song song){
+		//Stop the old song
 		if(activeSong != null)
 			activeSong.getMediaPlayer().stop();
 		activeSong = song;
-		activeSong.getMediaPlayer().play();
+		//Play the new song
 		activeSong.getMediaPlayer().setVolume(volume.getValue());
+		activeSong.getMediaPlayer().play();
+		//TODO make split songs play successfully
 	}
 	
 }

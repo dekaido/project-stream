@@ -1,6 +1,7 @@
 package edu.psu.cmpsc221;
 
 import java.io.File;
+import java.io.IOException;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -22,6 +23,9 @@ public class Main extends Application{
 	private MediaControlView mediaControlView;
 	
 	//I wish that I could use #DEFINE here
+	/**
+	 * Defines the horizontal scaling factor for the upright columns
+	 */
 	private static final int SCALE_FACTOR = 7;
 	
 	public static void main(String[] args){
@@ -31,11 +35,20 @@ public class Main extends Application{
 	@Override
 	public void start(Stage primaryStage){
 		
+		//Variable to hold if this is the first run
 		boolean firstRun = true;
 		
+		//If this is not the first run, note it, else create the devices file
 		if(new File("Devices.dat").exists())
 			firstRun = false;
+		else
+			try {
+				new File("Devices.dat").createNewFile();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		
+		//Set the title
 		primaryStage.setTitle("Media Player");
 
 		//The primary container for the application is a border pane
@@ -48,6 +61,7 @@ public class Main extends Application{
 		playlistView = new PlaylistView(this);
 		mediaControlView = new MediaControlView(this);
 		
+		//Place the views
 		container.setLeft(deviceView);
 		container.setCenter(songView);
 		container.setRight(playlistView);
@@ -84,6 +98,7 @@ public class Main extends Application{
 		menuFile.getItems().add(addLocalDevice);
 		menu.getMenus().add(menuFile);
 		
+		//Click listener to add interactivity to the menu
 		addLocalDevice.setOnAction(e -> {
 			AddLocalDeviceWindow wind = new AddLocalDeviceWindow(deviceView);
 			wind.initOwner(primaryStage);
@@ -111,6 +126,7 @@ public class Main extends Application{
 		}
 	}
 	
+	//Accessor methods to allow for the views to have access to eachother
 	public SongView getSongView(){
 		return songView;
 	}

@@ -13,10 +13,19 @@ import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
+/**
+ * This class defines the window created by the menu option for add local device
+ * @author David McDermott
+ * @author Grace Lin
+ */
 public class AddLocalDeviceWindow extends Stage{
 
 	private URL location;
 	
+	/**
+	 * Creates the Window and grants it access to the deviceView
+	 * @param deviceView the view that holds the list of devices
+	 */
 	public AddLocalDeviceWindow(DeviceView deviceView){
 		
 		//Create view elements
@@ -60,6 +69,7 @@ public class AddLocalDeviceWindow extends Stage{
 			close();
 		});
 		
+		//Choose Directory
 		btnLocation.setOnAction(e -> {
 			//Create a directory chooser window
 			DirectoryChooser dirSelect = new DirectoryChooser();
@@ -80,7 +90,9 @@ public class AddLocalDeviceWindow extends Stage{
 			}
 		});
 		
+		//On Submit
 		btnSubmit.setOnAction(e -> {
+			//Add the device to the list and close
 			deviceView.addDevice(new Device(txtName.getText(),location,true,chkSubDirs.isSelected()));
 			close();
 		});
