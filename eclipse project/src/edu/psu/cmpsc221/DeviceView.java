@@ -101,6 +101,7 @@ public class DeviceView extends ListView<String>{
 	 */
 	public void addDevice(Device device){
 		//Add the device to the list of devices and update the view
+		device.buildDirs();
 		devices.add(device);
 		ObservableList<String> list = getItems();
 		list.add(device.getName());
