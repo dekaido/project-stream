@@ -106,7 +106,7 @@ public class Device implements Serializable{
 			//Pull a list of songs from the parent directory
 			File dir = new File(location.getFile().replace("%20", " "));
 			//TODO DEBUG
-			System.out.println("Device Location" + dir.getAbsolutePath());
+			System.out.println("Device Location " + dir.getAbsolutePath());
 			//list all mp3s
 			String[] files = dir.list(new FilenameFilter(){
 
@@ -129,6 +129,7 @@ public class Device implements Serializable{
 			if(locations != null){
 				for(Device device : locations){
 					//traverse the subdevice tree
+					System.out.println("Scanning Locaiton: " + device.location.toString());
 					songs.addAll(device.getSongs());
 				}
 			}
@@ -187,6 +188,16 @@ public class Device implements Serializable{
 			//For network devices, there will be no subdevices
 		}else{
 			locations = new ArrayList<>();
+		}
+	}
+	
+	public boolean exists(){
+		if(local){
+			File file = new File(location.getFile().replace("%20", " "));
+			return file.exists();
+		}else{
+			//TODO handle existence of network locations
+			return false;
 		}
 	}
 	

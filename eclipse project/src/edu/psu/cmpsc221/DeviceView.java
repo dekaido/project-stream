@@ -44,8 +44,11 @@ public class DeviceView extends ListView<String>{
 			while(true){
 				try{
 					Device d = (Device)inFile.readObject();
-					d.buildDirs();
-					devices.add(d);
+					//Allow for cancellation of devices shared across computers
+					if(d.exists()){
+						d.buildDirs();
+						devices.add(d);
+					}
 				}catch(EOFException e){
 					break;
 				} catch (ClassNotFoundException e) {
