@@ -18,7 +18,7 @@ public class Device implements Serializable{
 	//The tree of sublocations is to be rebuilt at runtime to avoid storing massive amounts of data
 	private static final long serialVersionUID = -7161358199893324302L;
 	private URL location;
-	transient private ArrayList<Device> locations;
+	transient private ArrayList<Device> devices;
 	private boolean local;
 	private boolean useSubDirs;
 	private String name;
@@ -33,7 +33,7 @@ public class Device implements Serializable{
 	 */
 	public Device(String name, URL location, boolean local, boolean useSubDirectories){
 		this.local = local;
-		locations = new ArrayList<>();
+		devices = new ArrayList<>();
 		this.location = location;
 		this.useSubDirs = useSubDirectories;
 		this.name = name;
@@ -61,7 +61,7 @@ public class Device implements Serializable{
 						for(String dir : dirs){
 							if(dir != null){
 								try {
-									locations.add(new Device(dir, new File(dir).toURI().toURL(),local,useSubDirectories));
+									devices.add(new Device(dir, new File(dir).toURI().toURL(),local,useSubDirectories));
 								} catch (MalformedURLException e) {
 									e.printStackTrace();
 								}
@@ -74,7 +74,7 @@ public class Device implements Serializable{
 				}
 				//For network devices, there will be no subdevices
 			}else{
-				locations = new ArrayList<>();
+				devices = new ArrayList<>();
 			}
 		}
 	}
@@ -91,7 +91,7 @@ public class Device implements Serializable{
 	 * @return locations
 	 */
 	public ArrayList<Device> getSubDevices(){
-		return locations;
+		return devices;
 	}
 	
 	/**
@@ -100,13 +100,16 @@ public class Device implements Serializable{
 	 */
 	public ArrayList<Song> getSongs(){
 		if(local){
-			//Get a list of local songs
+			/*//Get a list of local songs
 			ArrayList<Song> songs = new ArrayList<>();
+			//TODO Remove all debug lines here
+			System.err.println("Current Device: " + location);
 			
 			//Pull a list of songs from the parent directory
 			File dir = new File(location.getFile().replace("%20", " "));
-			//TODO DEBUG
+			
 			System.out.println("Device Location " + dir.getAbsolutePath());
+			
 			//list all mp3s
 			String[] files = dir.list(new FilenameFilter(){
 
@@ -114,6 +117,7 @@ public class Device implements Serializable{
 				public boolean accept(File dir, String name) {
 					//TODO DEBUG
 					System.out.println("Location found " + dir.getAbsolutePath() + "\\" + name);
+					System.out.println("File found " + name + " in " + dir);
 					return name.endsWith(".mp3");
 				}
 				
@@ -121,24 +125,69 @@ public class Device implements Serializable{
 			if(files != null){
 				//convert to songs and put in the arraylist
 				for(String file : files){
+					System.out.println("Creating song for " + file);
 					songs.add(new Song(new File((dir.getAbsolutePath()+"/"+file))));
 				}
 			}
 			
 			//get all songs from all subdevices
-			if(locations != null){
-				for(Device device : locations){
+			if(devices != null){
+				for(Device device : devices){
 					//traverse the subdevice tree
 					System.out.println("Scanning Locaiton: " + device.location.toString());
 					songs.addAll(device.getSongs());
 				}
 			}
 			
-			return songs;
+			return songs;*/
+			//Attempt two			
+			return getSongsInDir(new File(location.getFile().replaceAll("%20", " ")));
 		}else{
 			//TODO Get a list of songs from the network
 			return null;
 		}
+	}
+	
+	private ArrayList<Song> getSongsInDir(File dir){
+		
+		System.err.println("Searching Directory: " + dir.getAbsolutePath());
+		
+		//List all song files
+		String[] songFiles = dir.list(new FilenameFilter(){
+
+			@Override
+			public boolean accept(File dir, String name) {
+				System.out.println("MP3: " + dir.getAbsolutePath() + '\\' + name);
+				return name.endsWith(".mp3");
+			}
+			
+		});
+		
+		//List all directories
+		String[] subDirs = dir.list(new FilenameFilter(){
+			
+			@Override
+			public boolean accept(File dir, String name){
+				System.out.println("Directory: " + dir.getAbsolutePath() + '\\' + name);
+				return new File(dir.getAbsolutePath() + '/' + name).isDirectory();
+			}
+		});
+		
+		ArrayList<Song> songs = new ArrayList<>();
+		
+		//Add all songs from this dir
+		for(String song : songFiles){
+			songs.add(new Song(new File(dir.getAbsolutePath() + '/' + song)));
+		}
+		
+		//Recursively add all subDirs
+		for(String subDir : subDirs){
+			System.err.println("Moving to " + dir.getAbsolutePath() + '\\' + subDir);
+			songs.addAll(getSongsInDir(new File(dir.getAbsolutePath() + '/' + subDir)));
+		}
+		
+		return songs;
+		
 	}
 	
 	public boolean usesSubDirectories(){
@@ -160,7 +209,7 @@ public class Device implements Serializable{
 	 */
 	public void buildDirs(){
 		//TODO make this search more than one levels down
-		locations = new ArrayList<>();
+		devices = new ArrayList<>();
 		
 		if(useSubDirs){
 			//Convert the URL to a File
@@ -179,7 +228,7 @@ public class Device implements Serializable{
 			if(dirs != null){
 				for(String dir : dirs){
 					try {
-						locations.add(new Device(dir, new File(this.location.getFile().replace("%20", " ") + dir).toURI().toURL(),local,useSubDirs));
+						devices.add(new Device(dir, new File(this.location.getFile().replace("%20", " ") + dir).toURI().toURL(),local,useSubDirs));
 					} catch (MalformedURLException e) {
 						e.printStackTrace();
 					}
@@ -187,7 +236,7 @@ public class Device implements Serializable{
 			}
 			//For network devices, there will be no subdevices
 		}else{
-			locations = new ArrayList<>();
+			devices = new ArrayList<>();
 		}
 	}
 	
