@@ -5,6 +5,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -29,21 +31,23 @@ public class MediaControlView extends GridPane{
 		
 		activeSong = null;
 		
-		//Create UI Components
-		//TODO Make 'em pretty
-		pause = new Button("Pause");
+		//Create UI Components		
+		pause = new Button();
+		pause.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("bt_pause.png"))));
 		pause.setOnAction(e -> {
 			if(activeSong != null)
 				activeSong.getMediaPlayer().pause();
 		});
 		
-		stop = new Button("Stop");
+		stop = new Button();
+		stop.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("bt_stop.png"))));
 		stop.setOnAction(e -> {
 			if(activeSong != null)
 					activeSong.getMediaPlayer().stop();
 		});
 		
-		resume = new Button("Play");
+		resume = new Button();
+		resume.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("bt_play.png"))));
 		resume.setOnAction(e -> {
 			if(activeSong != null)
 					activeSong.getMediaPlayer().play();
