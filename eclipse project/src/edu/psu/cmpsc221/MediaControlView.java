@@ -2,7 +2,9 @@ package edu.psu.cmpsc221;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -55,6 +57,8 @@ public class MediaControlView extends GridPane{
 					activeSong.getMediaPlayer().play();
 		});
 		
+		Label vol = new Label("Volume: ");
+		
 		//Volume is a range from 0-1 so it should be a slider
 		volume = new Slider();
 		volume.setMin(0);
@@ -76,19 +80,17 @@ public class MediaControlView extends GridPane{
 		
 		//Add all UI Components
 		HBox controls = new HBox(4);
-		controls.setPadding(new Insets(10));
-		controls.getChildren().addAll(resume, pause, stop, new Label("Volume:"), volume);
+		controls.setPadding(new Insets(20));
+//		controls.setAlignment(Pos.CENTER_RIGHT);
+		controls.getChildren().addAll(resume, pause, stop, vol, volume);
 		add(controls, 0, 0);
-//		add(pause, 0, 0);
-//		add(resume, 0, 1);
-//		add(stop, 0, 2);
-//		add(new Label("Volume:"),0,3);
-//		add(volume, 1, 3);
+//		setHalignment(controls,HPos.CENTER);
+		
 	}
 	
 	/**
 	 * Set the Song controlled by the View
-	 * @param song The Song to be controled
+	 * @param song The Song to be controlled
 	 */
 	public void setActiveSong(Song song){
 		//Stop the old song
