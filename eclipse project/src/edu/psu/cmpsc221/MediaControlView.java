@@ -2,12 +2,14 @@ package edu.psu.cmpsc221;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 
 /**
  * The MediaControlView provides control over the current song playing incluiding volume, pausing, playing, and stopping the audio.<br/>
@@ -58,6 +60,7 @@ public class MediaControlView extends GridPane{
 		volume.setMin(0);
 		volume.setMax(1);
 		volume.setValue(1);
+		
 		//Volume needs a change listener to update in realish time
 		volume.valueProperty().addListener(new ChangeListener<Number>(){
 
@@ -72,11 +75,15 @@ public class MediaControlView extends GridPane{
 		//TODO add time controls
 		
 		//Add all UI Components
-		add(pause, 0, 0);
-		add(resume, 0, 1);
-		add(stop, 0, 2);
-		add(new Label("Volume:"),0,3);
-		add(volume, 1, 3);
+		HBox controls = new HBox(4);
+		controls.setPadding(new Insets(10));
+		controls.getChildren().addAll(resume, pause, stop, new Label("Volume:"), volume);
+		add(controls, 0, 0);
+//		add(pause, 0, 0);
+//		add(resume, 0, 1);
+//		add(stop, 0, 2);
+//		add(new Label("Volume:"),0,3);
+//		add(volume, 1, 3);
 	}
 	
 	/**
