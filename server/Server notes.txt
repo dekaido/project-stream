@@ -1,0 +1,5 @@
+IP:	104.196.151.215
+Ports:	80
+
+mysql:
+	root:	Cmpsc221@bwine
