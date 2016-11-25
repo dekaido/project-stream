@@ -1,5 +1,7 @@
 IP:	104.196.151.215
-Ports:	80
+DOMAIN NAME:	projectstream.tk
+Protocols:	http,https
 
 mysql:
 	root:	Cmpsc221@bwine
+	php:	PHP7@localhost
