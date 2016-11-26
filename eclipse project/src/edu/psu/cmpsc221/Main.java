@@ -95,12 +95,20 @@ public class Main extends Application{
 		MenuBar menu = new MenuBar();
 		Menu menuFile = new Menu("File");
 		MenuItem addLocalDevice = new MenuItem("Add Local Device");
-		menuFile.getItems().add(addLocalDevice);
+		MenuItem addRemoteDevice = new MenuItem("Add Remote Server");
+		menuFile.getItems().addAll(addLocalDevice,addRemoteDevice);
 		menu.getMenus().add(menuFile);
 		
 		//Click listener to add interactivity to the menu
 		addLocalDevice.setOnAction(e -> {
 			AddLocalDeviceWindow wind = new AddLocalDeviceWindow(deviceView);
+			wind.initOwner(primaryStage);
+			wind.initModality(Modality.WINDOW_MODAL);
+			wind.show();
+		});
+		
+		addRemoteDevice.setOnAction(e -> {
+			AddRemoteDeviceWindow wind = new AddRemoteDeviceWindow(deviceView);
 			wind.initOwner(primaryStage);
 			wind.initModality(Modality.WINDOW_MODAL);
 			wind.show();
