@@ -47,6 +47,7 @@ public class DeviceView extends ListView<String>{
 					//Allow for cancellation of devices shared across computers
 					if(d.exists()){
 						d.buildDirs();
+						d.updateTemp(main.getTempDir());
 						devices.add(d);
 					}
 				}catch(EOFException e){
@@ -105,6 +106,7 @@ public class DeviceView extends ListView<String>{
 	public void addDevice(Device device){
 		//Add the device to the list of devices and update the view
 		device.buildDirs();
+		device.updateTemp(main.getTempDir());
 		devices.add(device);
 		ObservableList<String> list = getItems();
 		list.add(device.getName());

@@ -26,7 +26,7 @@ public class AddLocalDeviceWindow extends Stage{
 	 * Creates the Window and grants it access to the deviceView
 	 * @param deviceView the view that holds the list of devices
 	 */
-	public AddLocalDeviceWindow(DeviceView deviceView){
+	public AddLocalDeviceWindow(DeviceView deviceView, File tempDir){
 		
 		//Create view elements
 		GridPane view = new GridPane();
@@ -93,7 +93,7 @@ public class AddLocalDeviceWindow extends Stage{
 		//On Submit
 		btnSubmit.setOnAction(e -> {
 			//Add the device to the list and close
-			deviceView.addDevice(new Device(txtName.getText(),location,true,chkSubDirs.isSelected()));
+			deviceView.addDevice(new Device(txtName.getText(),location,true,chkSubDirs.isSelected(), tempDir));
 			close();
 		});
 		

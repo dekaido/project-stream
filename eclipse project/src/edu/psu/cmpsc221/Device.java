@@ -1,11 +1,22 @@
 package edu.psu.cmpsc221;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * The Device class provides a pointer to a location where audio is stored.<br/>
@@ -22,6 +33,7 @@ public class Device implements Serializable{
 	private boolean local;
 	private boolean useSubDirs;
 	private String name;
+	private File tempDir;
 	
 	/**
 	 * Constructor for Device
@@ -31,12 +43,13 @@ public class Device implements Serializable{
 	 * @param local Whether or not the device is local
 	 * @param useSubDirectories Whether or not to use subdirectories
 	 */
-	public Device(String name, URL location, boolean local, boolean useSubDirectories){
+	public Device(String name, URL location, boolean local, boolean useSubDirectories, File tempDir){
 		this.local = local;
 		devices = new ArrayList<>();
 		this.location = location;
 		this.useSubDirs = useSubDirectories;
 		this.name = name;
+		this.tempDir = tempDir;
 		
 		//for local devices, the URL can be treated as a file
 		if(local){
@@ -61,7 +74,7 @@ public class Device implements Serializable{
 						for(String dir : dirs){
 							if(dir != null){
 								try {
-									devices.add(new Device(dir, new File(dir).toURI().toURL(),local,useSubDirectories));
+									devices.add(new Device(dir, new File(dir).toURI().toURL(),local,useSubDirectories, tempDir));
 								} catch (MalformedURLException e) {
 									e.printStackTrace();
 								}
@@ -143,8 +156,37 @@ public class Device implements Serializable{
 			//Attempt two			
 			return getSongsInDir(new File(location.getFile().replaceAll("%20", " ")));
 		}else{
-			//TODO Get a list of songs from the network
-			return null;
+			//Get a list of songs from the network
+			ArrayList<Song> songs = new ArrayList<Song>();
+			try {
+				//Connect to the url
+				HttpsURLConnection conn = (HttpsURLConnection) new URL(location.toString()+"/songInfo.php?name=all").openConnection();
+				BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+				
+				//Read all 
+				String input;
+				ArrayList<String> names = new ArrayList<>();
+				//Put all names in an array
+				while((input = br.readLine()) != null){
+					input = input.substring(input.indexOf("file: ") + 6, input.indexOf("\tsize: "));
+					names.add(input);
+				}
+				
+				//Put each song in the temp dir
+				for(String name : names){
+					//Download the song
+					BackgroundDownload dl = new BackgroundDownload(location, tempDir, name);
+					
+					//Put it in the list
+					System.out.println(this.tempDir);
+					songs.add(new Song(new File(this.tempDir.getAbsolutePath().replaceAll("%20", " ")+"/"+name)));
+				}
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			return songs;
 		}
 	}
 	
@@ -228,7 +270,7 @@ public class Device implements Serializable{
 			if(dirs != null){
 				for(String dir : dirs){
 					try {
-						devices.add(new Device(dir, new File(this.location.getFile().replace("%20", " ") + dir).toURI().toURL(),local,useSubDirs));
+						devices.add(new Device(dir, new File(this.location.getFile().replace("%20", " ") + dir).toURI().toURL(),local,useSubDirs, tempDir));
 					} catch (MalformedURLException e) {
 						e.printStackTrace();
 					}
@@ -246,8 +288,12 @@ public class Device implements Serializable{
 			return file.exists();
 		}else{
 			//TODO handle existence of network locations
-			return false;
+			return true;
 		}
+	}
+	
+	public void updateTemp(File tempDir){
+		this.tempDir = tempDir;
 	}
 	
 }

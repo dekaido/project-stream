@@ -2,10 +2,13 @@ package edu.psu.cmpsc221;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Menu;
@@ -14,6 +17,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class Main extends Application{
 
@@ -21,6 +25,7 @@ public class Main extends Application{
 	private SongView songView;
 	private PlaylistView playlistView;
 	private MediaControlView mediaControlView;
+	private File tempDir;
 	
 	//I wish that I could use #DEFINE here
 	/**
@@ -34,6 +39,19 @@ public class Main extends Application{
 
 	@Override
 	public void start(Stage primaryStage){
+		
+		
+		//Create temp directory
+		try{
+		Path temp = Files.createTempDirectory("projectStream");
+		tempDir = new File(temp.toString());
+		if(!tempDir.exists())
+			tempDir.mkdir();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		System.out.println(tempDir.getAbsolutePath());
 		
 		//Variable to hold if this is the first run
 		boolean firstRun = true;
@@ -101,14 +119,14 @@ public class Main extends Application{
 		
 		//Click listener to add interactivity to the menu
 		addLocalDevice.setOnAction(e -> {
-			AddLocalDeviceWindow wind = new AddLocalDeviceWindow(deviceView);
+			AddLocalDeviceWindow wind = new AddLocalDeviceWindow(deviceView, tempDir);
 			wind.initOwner(primaryStage);
 			wind.initModality(Modality.WINDOW_MODAL);
 			wind.show();
 		});
 		
 		addRemoteDevice.setOnAction(e -> {
-			AddRemoteDeviceWindow wind = new AddRemoteDeviceWindow(deviceView);
+			AddRemoteDeviceWindow wind = new AddRemoteDeviceWindow(deviceView, tempDir);
 			wind.initOwner(primaryStage);
 			wind.initModality(Modality.WINDOW_MODAL);
 			wind.show();
@@ -121,6 +139,7 @@ public class Main extends Application{
 		primaryStage.setScene(scene);	
 		primaryStage.setMaximized(true);
 		primaryStage.show();
+
 		
 		//If this is the first run, then introduce yourself
 		if(firstRun){
@@ -132,6 +151,16 @@ public class Main extends Application{
 					+ "We hope that you enjoy our media player.");
 			dialogue.showAndWait();
 		}
+		
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>(){
+
+			@Override
+			public void handle(WindowEvent arg0) {
+				// Clean up the temp dir
+				deleteDirectory(tempDir);
+			}
+			
+		});
 	}
 	
 	//Accessor methods to allow for the views to have access to eachother
@@ -150,5 +179,29 @@ public class Main extends Application{
 	public MediaControlView getMediaControlView() {
 		return mediaControlView;
 	}
+	
+	public File getTempDir(){
+		return tempDir;
+	}
+	
+	private static boolean deleteDirectory(File path) {
+		//If the directory exists
+	    if( path.exists() ) {
+	      //List all files
+	      File[] files = path.listFiles();
+	      //Delete all files
+	      for(int i=0; i<files.length; i++) {
+	         if(files[i].isDirectory()) {
+	        	 //Recursive call to delete all subdirs	
+	        	 deleteDirectory(files[i]);
+	         }
+	         else {
+	           //Delete the file
+	           files[i].delete();
+	         }
+	      }
+	    }
+	    return( path.delete() );
+	  }
 	
 }
