@@ -24,6 +24,7 @@ public class BackgroundDownload extends Thread{
 		start();
 	}
 	
+	@Override
 	public void run(){
 		try{
 			int size = -1;

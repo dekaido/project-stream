@@ -2,9 +2,7 @@ package edu.psu.cmpsc221;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -23,7 +21,7 @@ public class MediaControlView extends GridPane{
 
 	//TODO make this a prettier grid or non grid view
 	
-	Song activeSong;
+	private Song activeSong;
 	
 	//UI Components
 	private Button pause;

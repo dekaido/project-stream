@@ -55,6 +55,7 @@ public class Song {
 			//TODO parse name
 			name = locationOnDisk.getName();
 			activeSegment = -1;
+			System.out.println(locationOnDisk.toString());
 			currentAudio = new MediaPlayer(new Media(locationOnDisk.toURI().toString()));
 		}
 		
