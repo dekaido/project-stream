@@ -91,6 +91,7 @@ public class MediaControlView extends GridPane{
 	 * @param song The Song to be controlled
 	 */
 	public void setActiveSong(Song song){
+		System.out.println("Song Received by MediaControlView " + song.toString());
 		//Stop the old song
 		if(activeSong != null)
 			activeSong.getMediaPlayer().stop();
@@ -98,6 +99,7 @@ public class MediaControlView extends GridPane{
 		//Play the new song
 		activeSong.getMediaPlayer().setVolume(volume.getValue());
 		activeSong.getMediaPlayer().play();
+		System.out.println("Now playing " + activeSong.toString());
 		//TODO make split songs play successfully
 	}
 	

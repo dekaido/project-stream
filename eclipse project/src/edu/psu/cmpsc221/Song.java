@@ -19,6 +19,7 @@ public class Song {
 	private ArrayList<String> segments;
 	private int activeSegment;
 	private String name;
+	private File locationOnDisk;
 	
 	/**
 	 * Constructor for a Song<br/>
@@ -29,6 +30,7 @@ public class Song {
 		
 		//Start playing from frame 0
 		activeSegment = 0;
+		this.locationOnDisk = locationOnDisk;
 		
 		//If the song is a set of frames
 		if(locationOnDisk.isDirectory()){
@@ -66,6 +68,7 @@ public class Song {
 	 * @return currentAudio
 	 */
 	public MediaPlayer getMediaPlayer(){
+		if(currentAudio.getMedia() == null) System.err.println("ERR NULL MEDIA");
 		return currentAudio;
 	}
 	
@@ -84,5 +87,10 @@ public class Song {
 	public String getName(){
 		//TODO use mp3 tags to get a more accurate name
 		return name;
+	}
+	
+	@Override
+	public String toString(){
+		return name + " @ " + locationOnDisk.getAbsolutePath();
 	}
 }

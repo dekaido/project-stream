@@ -34,10 +34,15 @@ public class SongView extends ListView<String>{
 		getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> selection, String oldVal, String newVal) {
-			int i;
-			//Find the song with the same name as the selection, and then make it the active song
-			for(i = 0; i < songs.size() && !songs.get(i).getName().equals(newVal); i++);
-				main.getMediaControlView().setActiveSong(songs.get(i));
+				int i;
+				//Find the song with the same name as the selection, and then make it the active song
+				for(i = 0; i < songs.size() - 1; i++){
+					if(songs.get(i).getName().equals(newVal)){
+						main.getMediaControlView().setActiveSong(songs.get(i));
+						System.out.println("Setting active song " + songs.get(i).toString());
+						break;
+					}
+				}
 			}
 		});
 	}
