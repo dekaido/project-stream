@@ -21,7 +21,7 @@ public class MediaControlView extends GridPane{
 
 	//TODO make this a prettier grid or non grid view
 	
-	private Song activeSong;
+	Song activeSong;
 	
 	//UI Components
 	private Button pause;
@@ -99,7 +99,7 @@ public class MediaControlView extends GridPane{
 		//Play the new song
 		activeSong.getMediaPlayer().setVolume(volume.getValue());
 		activeSong.getMediaPlayer().play();
-		System.out.println("Now playing " + activeSong.toString());
+		System.out.println("State of " + activeSong.toString() + ": " + activeSong.getMediaPlayer().getStatus().toString());
 		//TODO make split songs play successfully
 	}
 	

@@ -82,7 +82,7 @@ public class Main extends Application{
 		//Place the views
 		container.setLeft(deviceView);
 		container.setCenter(songView);
-		container.setRight(playlistView);
+		//container.setRight(playlistView);
 		container.setBottom(mediaControlView);
 
 		//Dynamically resize the subViews based on window size
@@ -157,7 +157,7 @@ public class Main extends Application{
 			@Override
 			public void handle(WindowEvent arg0) {
 				// Clean up the temp dir
-				deleteDirectory(tempDir);
+				deleteDir(tempDir);
 			}
 			
 		});
@@ -184,24 +184,18 @@ public class Main extends Application{
 		return tempDir;
 	}
 	
-	private static boolean deleteDirectory(File path) {
-		//If the directory exists
-	    if( path.exists() ) {
-	      //List all files
-	      File[] files = path.listFiles();
-	      //Delete all files
-	      for(int i=0; i<files.length; i++) {
-	         if(files[i].isDirectory()) {
-	        	 //Recursive call to delete all subdirs	
-	        	 deleteDirectory(files[i]);
-	         }
-	         else {
-	           //Delete the file
-	           files[i].delete();
+	private boolean deleteDir(File dir) {
+	      if (dir.isDirectory()) {
+	         String[] children = dir.list();
+	         for (int i = 0; i < children.length; i++) {
+	            boolean success = deleteDir
+	            (new File(dir, children[i]));
+	            if (!success) {
+	               return false;
+	            }
 	         }
 	      }
-	    }
-	    return( path.delete() );
+	      return dir.delete();
 	  }
 	
 }

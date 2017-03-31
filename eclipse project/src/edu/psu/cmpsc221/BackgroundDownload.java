@@ -25,7 +25,6 @@ public class BackgroundDownload extends Thread{
 		start();
 	}
 	
-	@Override
 	public void run(){
 		File file = new File(tempDir.getAbsolutePath().replaceAll("%20", " ") + "/" + name);
 		try {

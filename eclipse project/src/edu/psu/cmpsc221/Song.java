@@ -49,7 +49,7 @@ public class Song {
 				segments.add(fileName);
 			}
 			
-			//Set the current audioclip from the segments
+			//Set the current media from the segments
 			currentAudio = new MediaPlayer(new Media(segments.get(0).replace('\\', '/')));
 
 			//If the song is an mp3 file, then set a flag
@@ -57,7 +57,6 @@ public class Song {
 			//TODO parse name
 			name = locationOnDisk.getName();
 			activeSegment = -1;
-			System.out.println(locationOnDisk.toString());
 			currentAudio = new MediaPlayer(new Media(locationOnDisk.toURI().toString()));
 		}
 		

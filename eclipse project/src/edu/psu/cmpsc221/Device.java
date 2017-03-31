@@ -169,11 +169,11 @@ public class Device implements Serializable{
 				//Put each song in the temp dir
 				for(String name : names){
 					//Download the song
-					BackgroundDownload dl = new BackgroundDownload(location, tempDir, name);
+					new BackgroundDownload(location, tempDir, name);
 					
 					//Put it in the list
 					System.out.println(this.tempDir);
-					songs.add(new Song(new File(this.tempDir.getAbsolutePath().replaceAll("%20", " ")+"/"+name)));
+					songs.add(new Song(new File(tempDir.getAbsolutePath().replace("\\","/") + "/" + name)));
 				}
 				
 			} catch (IOException e) {
